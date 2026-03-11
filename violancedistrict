@@ -1,6 +1,5 @@
 -- [[ VIOLENCE DISTRICT - ATOMIC EDITION V1.0.0 ]]
 -- Author: Atomic Community
--- Credits: TheoXAtomic, DapzXAtomic, MonxAtomic
 
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 
@@ -11,7 +10,7 @@ local Window = WindUI:CreateWindow({
     Folder = "AtomicScripts"
 })
 
--- Top Right Information (Executor & Version)
+-- Top Right Information
 local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
 Window:AddTopRightInfo("Exec: " .. Executor)
 Window:AddTopRightInfo("Ver: 1.0.0")
@@ -26,30 +25,24 @@ MainTab:AddButton({
     Desc = "discord.gg/getsades",
     Callback = function()
         setclipboard("https://discord.gg/getsades")
-        WindUI:Notify("Success", "Discord link copied to clipboard!", 3)
+        WindUI:Notify("Success", "Discord link copied!", 3)
     end
 })
 
 -- ==========================================
--- TAB: INFO (CHANGELOG & CREDITS)
+-- TAB: INFO
 -- ==========================================
 local InfoTab = Window:CreateTab("Info", "info")
 InfoTab:AddLabel("--- CREDITS ---")
-InfoTab:AddLabel("• TheoXAtomic")
-InfoTab:AddLabel("• DapzXAtomic")
-InfoTab:AddLabel("• MonxAtomic")
+InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
 InfoTab:AddDivider()
 InfoTab:AddLabel("--- CHANGELOG V1.0.0 ---")
-InfoTab:AddLabel("- First Release for Violence District")
-InfoTab:AddLabel("- Integrated WindUI (Official GitHub)")
-InfoTab:AddLabel("- Added Auto Parry & Survivor Modules")
-InfoTab:AddLabel("- Added Killer Risky Modules")
+InfoTab:AddLabel("- First Release")
 
 -- ==========================================
 -- TAB: UTILITIES
 -- ==========================================
 local UtilsTab = Window:CreateTab("Utilities", "settings")
-
 UtilsTab:AddSlider({
     Title = "WalkSpeed",
     Min = 16, Max = 300, Default = 16,
@@ -60,102 +53,27 @@ UtilsTab:AddSlider({
     end
 })
 
-UtilsTab:AddToggle({
-    Title = "ESP Players",
-    Callback = function(state)
-        -- Masukkan fungsi ESP Lu di sini
-    end
-})
-
-UtilsTab:AddToggle({
-    Title = "Noclip",
-    Callback = function(state)
-        _G.Noclip = state
-        game:GetService("RunService").Stepped:Connect(function()
-            if _G.Noclip and game.Players.LocalPlayer.Character then
-                for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-                    if v:IsA("BasePart") then v.CanCollide = false end
-                end
-            end
-        end)
-    end
-})
-
-UtilsTab:AddToggle({
-    Title = "Fullbright",
-    Callback = function(state)
-        if state then
-            game:GetService("Lighting").Brightness = 2
-            game:GetService("Lighting").ClockTime = 14
-            game:GetService("Lighting").FogEnd = 100000
-        else
-            game:GetService("Lighting").Brightness = 1
-            game:GetService("Lighting").ClockTime = 0
-        end
-    end
-})
-
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
 local SurvTab = Window:CreateTab("Survivor", "user")
-
 SurvTab:AddToggle({
     Title = "Auto Parry (Sword Required)",
-    Desc = "Otomatis tangkis serangan jika bawa pedang",
     Callback = function(state)
         _G.AutoParry = state
-        spawn(function()
-            while _G.AutoParry do
-                task.wait()
-                local char = game.Players.LocalPlayer.Character
-                local tool = char and char:FindFirstChildOfClass("Tool")
-                if tool and (tool.Name:lower():find("sword") or tool.Name:lower():find("blade")) then
-                    -- Cek Killer terdekat
-                    for _, p in pairs(game.Players:GetPlayers()) do
-                        if p ~= game.Players.LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                            local dist = (char.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
-                            if dist < 15 then
-                                -- REPLACED: Masukkan Remote Parry lu di sini
-                                -- ReplicatedStorage.Events.Parry:FireServer()
-                            end
-                        end
-                    end
-                end
-            end
-        end)
     end
 })
-
-SurvTab:AddToggle({ Title = "Auto Skill Check", Callback = function(s) end })
-SurvTab:AddToggle({ Title = "Infinite Stamina", Callback = function(s) end })
-SurvTab:AddToggle({ Title = "Auto Fix Generator", Callback = function(s) end })
-SurvTab:AddButton({ Title = "Instant Open Gate", Callback = function() end })
 
 -- ==========================================
 -- TAB: KILLER
 -- ==========================================
 local KillTab = Window:CreateTab("Killer", "skull")
-
 KillTab:AddToggle({
-    Title = "Instant Kill ALL (VERY RISKY!)",
+    Title = "Instant Kill ALL (RISKY!)",
     Callback = function(state)
-        if state then
-            WindUI:Notify("DANGER", "Fitur ini sangat beresiko ban!", 5)
-            -- Masukkan Remote Damage/Kill Loop di sini
-        end
+        if state then WindUI:Notify("WARNING", "High Ban Risk!", 5) end
     end
 })
-
-KillTab:AddToggle({
-    Title = "Hitbox Expander",
-    Callback = function(state)
-        -- Loop players dan ubah RootPart Size
-    end
-})
-
-KillTab:AddToggle({ Title = "No Attack Cool-down", Callback = function(s) end })
-KillTab:AddButton({ Title = "Teleport to Survivor", Callback = function() end })
 
 -- ==========================================
 -- TAB: PERFORMANCE
@@ -163,14 +81,11 @@ KillTab:AddButton({ Title = "Teleport to Survivor", Callback = function() end })
 local PerfTab = Window:CreateTab("Performance", "zap")
 PerfTab:AddButton({
     Title = "FPS Booster",
-    Desc = "Menghilangkan tekstur & bayangan",
     Callback = function()
         game:GetService("Lighting").GlobalShadows = false
-        for _, v in pairs(game:GetDescendants()) do
-            if v:IsA("BasePart") then
-                v.Material = Enum.Material.SmoothPlastic
-            end
-        end
         WindUI:Notify("Performance", "FPS Boost Activated!", 2)
     end
 })
+
+-- [[ PENTING: BIAR TAB MUNCUL ]]
+Window:SelectTab(1) -- Ini bakal maksa buka Tab pertama (Main) pas di-execute
