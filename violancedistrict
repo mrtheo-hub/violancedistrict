@@ -7,20 +7,20 @@ local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footag
 local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown"
 local ScriptVer = "v1.0.0"
 
--- Kita taruh info Exec di Title biar nggak error lagi
 local Window = WindUI:CreateWindow({
-    Title = "Atomic Edition - " .. ExecName .. " (" .. ScriptVer .. ")",
+    Title = "Atomic Edition - " .. ExecName,
     Icon = "rbxassetid://10723343321", 
     Author = "Atomic Community",
     Folder = "AtomicScripts"
 })
+
+task.wait(0.2) -- Jeda biar window siap render tab
 
 -- ==========================================
 -- TAB: MAIN
 -- ==========================================
 local MainTab = Window:CreateTab("Main", "home")
 MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
-MainTab:AddDivider()
 MainTab:AddButton({
     Title = "Copy Discord Link",
     Desc = "discord.gg/getsades",
@@ -37,14 +37,36 @@ local InfoTab = Window:CreateTab("Info", "info")
 InfoTab:AddLabel("--- CREDITS ---")
 InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
 InfoTab:AddDivider()
-InfoTab:AddLabel("--- CHANGELOG V1.0.0 ---")
-InfoTab:AddLabel("- Fixed 'AddTopRightInfo' Error")
-InfoTab:AddLabel("- Fixed Tab Rendering Issue")
+InfoTab:AddLabel("Version: " .. ScriptVer)
 
 -- ==========================================
 -- TAB: UTILITIES
 -- ==========================================
 local UtilsTab = Window:CreateTab("Utilities", "settings")
+
+UtilsTab:AddToggle({
+    Title = "Anti-Detection",
+    Desc = "Bypass basic anticheat & staff detection",
+    Callback = function(state)
+        _G.AntiDetect = state
+        if state then
+            WindUI:Notify("Anti-Detect", "Activated: Bypassing detection...", 3)
+            -- Logic: Anti-Kick for WalkSpeed & Teleport
+            local mt = getrawmetatable(game)
+            local old = mt.__namecall
+            setreadonly(mt, false)
+            mt.__namecall = newcclosure(function(self, ...)
+                local method = getnamecallmethod()
+                if _G.AntiDetect and (method == "Kick" or method == "kick") then
+                    return nil -- Blokir perintah kick dari game
+                end
+                return old(self, ...)
+            end)
+            setreadonly(mt, true)
+        end
+    end
+})
+
 UtilsTab:AddSlider({
     Title = "WalkSpeed",
     Min = 16, Max = 300, Default = 16,
@@ -55,15 +77,20 @@ UtilsTab:AddSlider({
     end
 })
 
+UtilsTab:AddToggle({
+    Title = "Fullbright",
+    Callback = function(state)
+        game:GetService("Lighting").Brightness = state and 2 or 1
+    end
+})
+
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
 local SurvTab = Window:CreateTab("Survivor", "user")
 SurvTab:AddToggle({
-    Title = "Auto Parry (Sword Required)",
-    Callback = function(state)
-        _G.AutoParry = state
-    end
+    Title = "Auto Parry (Sword)",
+    Callback = function(state) _G.AutoParry = state end
 })
 SurvTab:AddButton({ Title = "Auto Fix Generator", Callback = function() end })
 
@@ -72,9 +99,9 @@ SurvTab:AddButton({ Title = "Auto Fix Generator", Callback = function() end })
 -- ==========================================
 local KillTab = Window:CreateTab("Killer", "skull")
 KillTab:AddToggle({
-    Title = "Instant Kill ALL (RISKY!)",
-    Callback = function(state)
-        if state then WindUI:Notify("WARNING", "Very Risky Fitur!", 5) end
+    Title = "Instant Kill ALL",
+    Callback = function(state) 
+        if state then WindUI:Notify("WARNING", "Very Risky!", 4) end
     end
 })
 
@@ -90,5 +117,5 @@ PerfTab:AddButton({
     end
 })
 
--- PENTING: Force render tab pertama
+-- Force Open Tab
 Window:SelectTab(MainTab)
