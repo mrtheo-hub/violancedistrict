@@ -6,7 +6,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Violence District - Atomic Edition",
    LoadingTitle = "Atomic Community v1.0.0",
-   LoadingSubtitle = "Loading All Modules...",
+   LoadingSubtitle = "Loading Modules...",
    ConfigurationSaving = { Enabled = false }
 })
 
@@ -21,10 +21,21 @@ MainTab:CreateButton({
 })
 
 -- ==========================================
--- TAB: UTILITIES (ESP, ANTI-STAFF, NOCLIP)
+-- TAB: INFO (CHANGELOG)
+-- ==========================================
+local InfoTab = Window:CreateTab("Info", 4483362458)
+InfoTab:CreateSection("Changelog V1.0.0")
+InfoTab:CreateLabel("• Noclip & Anti-Staff Added")
+InfoTab:CreateLabel("• One Hit & Auto Gate Added")
+InfoTab:CreateLabel("• FPS Booster Optimized")
+InfoTab:CreateSection("Credits")
+InfoTab:CreateLabel("TheoXAtomic | DapzXAtomic | MonxAtomic")
+
+-- ==========================================
+-- TAB: UTILITIES
 -- ==========================================
 local UtilsTab = Window:CreateTab("Utilities", 4483362458)
-UtilsTab:CreateSection("Anti-Detection")
+UtilsTab:CreateSection("Detection")
 UtilsTab:CreateToggle({
    Name = "Noclip (Tembus Tembok)",
    Callback = function(Value)
@@ -54,22 +65,17 @@ UtilsTab:CreateToggle({
    end,
 })
 
-UtilsTab:CreateSlider({
-   Name = "WalkSpeed",
-   Range = {16, 300},
-   CurrentValue = 16,
-   Callback = function(Value)
-      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-   end,
-})
-
 -- ==========================================
--- TAB: SURVIVOR & KILLER
+-- TAB: SURVIVOR
 -- ==========================================
 local SurvTab = Window:CreateTab("Survivor", 4483362458)
-SurvTab:CreateToggle({ Name = "Auto Parry", Callback = function(s) end })
+SurvTab:CreateToggle({ Name = "Auto Parry (Sword)", Callback = function(s) end })
 SurvTab:CreateToggle({ Name = "Auto Gate", Callback = function(s) end })
+SurvTab:CreateToggle({ Name = "Infinite Stamina", Callback = function(s) end })
 
+-- ==========================================
+-- TAB: KILLER
+-- ==========================================
 local KillTab = Window:CreateTab("Killer", 4483362458)
 KillTab:CreateToggle({ Name = "One Hit Kill", Callback = function(s) end })
 KillTab:CreateToggle({ Name = "Hitbox Expander", Callback = function(s) end })
@@ -79,7 +85,7 @@ KillTab:CreateToggle({ Name = "Hitbox Expander", Callback = function(s) end })
 -- ==========================================
 local PerfTab = Window:CreateTab("Performance", 4483362458)
 PerfTab:CreateButton({
-   Name = "FPS Booster (Clear Map)",
+   Name = "FPS Booster",
    Callback = function()
       game:GetService("Lighting").GlobalShadows = false
       for _, v in pairs(workspace:GetDescendants()) do
