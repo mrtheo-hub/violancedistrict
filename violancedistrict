@@ -4,22 +4,19 @@
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 
 -- Deteksi Executor & Versi
-local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown Executor"
+local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown"
 local ScriptVer = "v1.0.0"
 
+-- Kita taruh info Exec di Title biar nggak error lagi
 local Window = WindUI:CreateWindow({
-    Title = "Violence District - Atomic Edition",
+    Title = "Atomic Edition - " .. ExecName .. " (" .. ScriptVer .. ")",
     Icon = "rbxassetid://10723343321", 
     Author = "Atomic Community",
     Folder = "AtomicScripts"
 })
 
--- Tambahkan Info di Pojok Kanan Atas
-Window:AddTopRightInfo("Exec: " .. ExecName)
-Window:AddTopRightInfo("Version: " .. ScriptVer)
-
 -- ==========================================
--- TAB: MAIN (Urutan Pertama)
+-- TAB: MAIN
 -- ==========================================
 local MainTab = Window:CreateTab("Main", "home")
 MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
@@ -29,22 +26,20 @@ MainTab:AddButton({
     Desc = "discord.gg/getsades",
     Callback = function()
         setclipboard("https://discord.gg/getsades")
-        WindUI:Notify("Success", "Discord link copied to clipboard!", 3)
+        WindUI:Notify("Success", "Discord link copied!", 3)
     end
 })
 
 -- ==========================================
--- TAB: INFO (Credits & Changelog)
+-- TAB: INFO
 -- ==========================================
 local InfoTab = Window:CreateTab("Info", "info")
 InfoTab:AddLabel("--- CREDITS ---")
-InfoTab:AddLabel("• TheoXAtomic")
-InfoTab:AddLabel("• DapzXAtomic")
-InfoTab:AddLabel("• MonxAtomic")
+InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
 InfoTab:AddDivider()
 InfoTab:AddLabel("--- CHANGELOG V1.0.0 ---")
-InfoTab:AddLabel("- First Release")
-InfoTab:AddLabel("- Added Top-Right Info (Exec & Ver)")
+InfoTab:AddLabel("- Fixed 'AddTopRightInfo' Error")
+InfoTab:AddLabel("- Fixed Tab Rendering Issue")
 
 -- ==========================================
 -- TAB: UTILITIES
@@ -60,18 +55,6 @@ UtilsTab:AddSlider({
     end
 })
 
-UtilsTab:AddToggle({
-    Title = "Fullbright",
-    Callback = function(state)
-        if state then
-            game:GetService("Lighting").Brightness = 2
-            game:GetService("Lighting").ClockTime = 14
-        else
-            game:GetService("Lighting").Brightness = 1
-        end
-    end
-})
-
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
@@ -80,10 +63,8 @@ SurvTab:AddToggle({
     Title = "Auto Parry (Sword Required)",
     Callback = function(state)
         _G.AutoParry = state
-        -- Logic Parry Lu disini
     end
 })
-SurvTab:AddToggle({ Title = "Auto Skill Check", Callback = function() end })
 SurvTab:AddButton({ Title = "Auto Fix Generator", Callback = function() end })
 
 -- ==========================================
@@ -96,7 +77,6 @@ KillTab:AddToggle({
         if state then WindUI:Notify("WARNING", "Very Risky Fitur!", 5) end
     end
 })
-KillTab:AddToggle({ Title = "Hitbox Expander", Callback = function() end })
 
 -- ==========================================
 -- TAB: PERFORMANCE
@@ -110,5 +90,5 @@ PerfTab:AddButton({
     end
 })
 
--- PENTING: Supaya Tab Langsung Muncul di Layar
+-- PENTING: Force render tab pertama
 Window:SelectTab(MainTab)
