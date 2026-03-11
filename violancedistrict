@@ -3,6 +3,10 @@
 
 local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
 
+-- Deteksi Executor & Versi
+local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown Executor"
+local ScriptVer = "v1.0.0"
+
 local Window = WindUI:CreateWindow({
     Title = "Violence District - Atomic Edition",
     Icon = "rbxassetid://10723343321", 
@@ -10,34 +14,37 @@ local Window = WindUI:CreateWindow({
     Folder = "AtomicScripts"
 })
 
--- Top Right Information
-local Executor = (identifyexecutor and identifyexecutor()) or "Unknown"
-Window:AddTopRightInfo("Exec: " .. Executor)
-Window:AddTopRightInfo("Ver: 1.0.0")
+-- Tambahkan Info di Pojok Kanan Atas
+Window:AddTopRightInfo("Exec: " .. ExecName)
+Window:AddTopRightInfo("Version: " .. ScriptVer)
 
 -- ==========================================
--- TAB: MAIN
+-- TAB: MAIN (Urutan Pertama)
 -- ==========================================
 local MainTab = Window:CreateTab("Main", "home")
 MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
+MainTab:AddDivider()
 MainTab:AddButton({
     Title = "Copy Discord Link",
     Desc = "discord.gg/getsades",
     Callback = function()
         setclipboard("https://discord.gg/getsades")
-        WindUI:Notify("Success", "Discord link copied!", 3)
+        WindUI:Notify("Success", "Discord link copied to clipboard!", 3)
     end
 })
 
 -- ==========================================
--- TAB: INFO
+-- TAB: INFO (Credits & Changelog)
 -- ==========================================
 local InfoTab = Window:CreateTab("Info", "info")
 InfoTab:AddLabel("--- CREDITS ---")
-InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
+InfoTab:AddLabel("• TheoXAtomic")
+InfoTab:AddLabel("• DapzXAtomic")
+InfoTab:AddLabel("• MonxAtomic")
 InfoTab:AddDivider()
 InfoTab:AddLabel("--- CHANGELOG V1.0.0 ---")
 InfoTab:AddLabel("- First Release")
+InfoTab:AddLabel("- Added Top-Right Info (Exec & Ver)")
 
 -- ==========================================
 -- TAB: UTILITIES
@@ -53,6 +60,18 @@ UtilsTab:AddSlider({
     end
 })
 
+UtilsTab:AddToggle({
+    Title = "Fullbright",
+    Callback = function(state)
+        if state then
+            game:GetService("Lighting").Brightness = 2
+            game:GetService("Lighting").ClockTime = 14
+        else
+            game:GetService("Lighting").Brightness = 1
+        end
+    end
+})
+
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
@@ -61,8 +80,11 @@ SurvTab:AddToggle({
     Title = "Auto Parry (Sword Required)",
     Callback = function(state)
         _G.AutoParry = state
+        -- Logic Parry Lu disini
     end
 })
+SurvTab:AddToggle({ Title = "Auto Skill Check", Callback = function() end })
+SurvTab:AddButton({ Title = "Auto Fix Generator", Callback = function() end })
 
 -- ==========================================
 -- TAB: KILLER
@@ -71,9 +93,10 @@ local KillTab = Window:CreateTab("Killer", "skull")
 KillTab:AddToggle({
     Title = "Instant Kill ALL (RISKY!)",
     Callback = function(state)
-        if state then WindUI:Notify("WARNING", "High Ban Risk!", 5) end
+        if state then WindUI:Notify("WARNING", "Very Risky Fitur!", 5) end
     end
 })
+KillTab:AddToggle({ Title = "Hitbox Expander", Callback = function() end })
 
 -- ==========================================
 -- TAB: PERFORMANCE
@@ -83,9 +106,9 @@ PerfTab:AddButton({
     Title = "FPS Booster",
     Callback = function()
         game:GetService("Lighting").GlobalShadows = false
-        WindUI:Notify("Performance", "FPS Boost Activated!", 2)
+        WindUI:Notify("Performance", "FPS Boosted", 2)
     end
 })
 
--- [[ PENTING: BIAR TAB MUNCUL ]]
-Window:SelectTab(1) -- Ini bakal maksa buka Tab pertama (Main) pas di-execute
+-- PENTING: Supaya Tab Langsung Muncul di Layar
+Window:SelectTab(MainTab)
