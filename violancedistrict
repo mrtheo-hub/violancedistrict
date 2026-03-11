@@ -1,135 +1,89 @@
 -- [[ VIOLENCE DISTRICT - ATOMIC EDITION V1.0.0 ]]
 -- Author: Atomic Community
--- Credits: TheoXAtomic, DapzXAtomic, MonxAtomic
 
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- Deteksi Info
-local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown"
-local ScriptVer = "v1.0.0"
-
-local Window = WindUI:CreateWindow({
-    Title = "Atomic Edition - " .. ExecName,
-    Icon = "rbxassetid://10723343321", 
-    Author = "Atomic Community",
-    Folder = "AtomicScripts"
+local Window = Rayfield:CreateWindow({
+   Name = "Violence District - Atomic Edition",
+   LoadingTitle = "Atomic Community v1.0.0",
+   LoadingSubtitle = "Loading All Modules...",
+   ConfigurationSaving = { Enabled = false }
 })
-
-task.wait(0.5)
 
 -- ==========================================
 -- TAB: MAIN
 -- ==========================================
-local MainTab = Window:AddTab("Main", "home")
-MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
-MainTab:AddButton({
-    Title = "Copy Discord Link",
-    Desc = "discord.gg/getsades",
-    Callback = function()
-        setclipboard("https://discord.gg/getsades")
-        WindUI:Notify("Success", "Link Copied!", 3)
-    end
+local MainTab = Window:CreateTab("Main", 4483362458)
+MainTab:CreateLabel("© 2026 ATMC Community & DapzX Team")
+MainTab:CreateButton({
+   Name = "Copy Discord Link",
+   Callback = function() setclipboard("https://discord.gg/getsades") end,
 })
 
 -- ==========================================
--- TAB: INFO (CHANGELOG)
+-- TAB: UTILITIES (ESP, ANTI-STAFF, NOCLIP)
 -- ==========================================
-local InfoTab = Window:AddTab("Info", "info")
-InfoTab:AddLabel("--- CREDITS ---")
-InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
-InfoTab:AddDivider()
-InfoTab:AddLabel("--- CHANGELOG V1.0.0 ---")
-InfoTab:AddLabel("- Added Noclip (Tembus Tembok)")
-InfoTab:AddLabel("- Added Anti-Staff & ESP")
-InfoTab:AddLabel("- Added One Hit & Auto Gate")
-InfoTab:AddLabel("- Stability Fix for Tab Rendering")
-
--- ==========================================
--- TAB: UTILITIES
--- ==========================================
-local UtilsTab = Window:AddTab("Utilities", "settings")
-
-UtilsTab:AddToggle({
-    Title = "Noclip (Tembus Tembok)",
-    Desc = "Bisa tembus semua objek/tembok di map",
-    Callback = function(state)
-        _G.Noclip = state
-        game:GetService("RunService").Stepped:Connect(function()
-            if _G.Noclip and game.Players.LocalPlayer.Character then
-                for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-                    if v:IsA("BasePart") then v.CanCollide = false end
-                end
+local UtilsTab = Window:CreateTab("Utilities", 4483362458)
+UtilsTab:CreateSection("Anti-Detection")
+UtilsTab:CreateToggle({
+   Name = "Noclip (Tembus Tembok)",
+   Callback = function(Value)
+      _G.Noclip = Value
+      game:GetService("RunService").Stepped:Connect(function()
+         if _G.Noclip and game.Players.LocalPlayer.Character then
+            for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+               if v:IsA("BasePart") then v.CanCollide = false end
             end
-        end)
-    end
+         end
+      end)
+   end,
 })
 
-UtilsTab:AddToggle({
-    Title = "Anti-Staff Detection",
-    Callback = function(state)
-        _G.AntiStaff = state
-        spawn(function()
-            while _G.AntiStaff do
-                for _, p in pairs(game.Players:GetPlayers()) do
-                    if p:GetRankInGroup(0) > 100 then -- Sesuaikan ID Group
-                        game.Players.LocalPlayer:Kick("Staff Detected!")
-                    end
-                end
-                task.wait(2)
+UtilsTab:CreateToggle({
+   Name = "Anti-Staff Detection",
+   Callback = function(Value)
+      _G.AntiStaff = Value
+      spawn(function()
+         while _G.AntiStaff do
+            for _, p in pairs(game.Players:GetPlayers()) do
+               if p:GetRankInGroup(0) > 100 then game.Players.LocalPlayer:Kick("Staff!") end
             end
-        end)
-    end
+            task.wait(2)
+         end
+      end)
+   end,
 })
 
-UtilsTab:AddSlider({
-    Title = "WalkSpeed",
-    Min = 16, Max = 300, Default = 16,
-    Callback = function(v)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
-    end
-})
-
-UtilsTab:AddToggle({
-    Title = "ESP Players",
-    Callback = function(state) end
+UtilsTab:CreateSlider({
+   Name = "WalkSpeed",
+   Range = {16, 300},
+   CurrentValue = 16,
+   Callback = function(Value)
+      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
 })
 
 -- ==========================================
--- TAB: SURVIVOR
+-- TAB: SURVIVOR & KILLER
 -- ==========================================
-local SurvTab = Window:AddTab("Survivor", "user")
+local SurvTab = Window:CreateTab("Survivor", 4483362458)
+SurvTab:CreateToggle({ Name = "Auto Parry", Callback = function(s) end })
+SurvTab:CreateToggle({ Name = "Auto Gate", Callback = function(s) end })
 
-SurvTab:AddToggle({ Title = "Auto Parry (Sword)", Callback = function(s) _G.AutoParry = s end })
-SurvTab:AddToggle({ Title = "Infinite Stamina", Callback = function(s) end })
-SurvTab:AddToggle({ Title = "Auto Fix Generator", Callback = function(s) end })
-SurvTab:AddButton({ Title = "Instant Open Gate", Callback = function() end })
-
--- ==========================================
--- TAB: KILLER
--- ==========================================
-local KillTab = Window:AddTab("Killer", "skull")
-
-KillTab:AddToggle({ Title = "One Hit Kill", Callback = function(s) end })
-KillTab:AddToggle({ Title = "Hitbox Expander", Callback = function(s) end })
-KillTab:AddToggle({ Title = "Instant Kill ALL", Callback = function(s) end })
-KillTab:AddButton({ Title = "Teleport to Survivor", Callback = function() end })
+local KillTab = Window:CreateTab("Killer", 4483362458)
+KillTab:CreateToggle({ Name = "One Hit Kill", Callback = function(s) end })
+KillTab:CreateToggle({ Name = "Hitbox Expander", Callback = function(s) end })
 
 -- ==========================================
 -- TAB: PERFORMANCE
 -- ==========================================
-local PerfTab = Window:AddTab("Performance", "zap")
-
-PerfTab:AddButton({
-    Title = "FPS Booster + Clear Textures",
-    Callback = function()
-        game:GetService("Lighting").GlobalShadows = false
-        for _, v in pairs(game:GetDescendants()) do
-            if v:IsA("BasePart") then v.Material = Enum.Material.SmoothPlastic end
-            if v:IsA("Decal") then v:Destroy() end
-        end
-        WindUI:Notify("Performance", "Map Optimized!", 2)
-    end
+local PerfTab = Window:CreateTab("Performance", 4483362458)
+PerfTab:CreateButton({
+   Name = "FPS Booster (Clear Map)",
+   Callback = function()
+      game:GetService("Lighting").GlobalShadows = false
+      for _, v in pairs(workspace:GetDescendants()) do
+         if v:IsA("Decal") or v:IsA("Texture") then v:Destroy() end
+      end
+   end,
 })
-
--- Finalize render
-Window:SelectTab(1)
