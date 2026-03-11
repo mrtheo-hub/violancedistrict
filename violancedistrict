@@ -1,114 +1,118 @@
 -- [[ VIOLENCE DISTRICT - ATOMIC EDITION V1.0.0 ]]
 -- Author: Atomic Community
+-- Library: Rayfield (More Stable)
 
-local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Violence District - Atomic Edition",
+   LoadingTitle = "Atomic Community Loading...",
+   LoadingSubtitle = "by Theo, Dapz, & Mon",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "AtomicScripts",
+      FileName = "ViolenceDistrict"
+   },
+   KeySystem = false -- Lu bisa aktifin kalo mau pake key nanti
+})
 
 -- Deteksi Executor & Versi
 local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown"
-local ScriptVer = "v1.0.0"
-
-local Window = WindUI:CreateWindow({
-    Title = "Atomic Edition - " .. ExecName .. " (" .. ScriptVer .. ")",
-    Icon = "rbxassetid://10723343321", 
-    Author = "Atomic Community",
-    Folder = "AtomicScripts"
-})
 
 -- ==========================================
 -- TAB: MAIN
 -- ==========================================
-local MainTab = Window:Tab({ Title = "Main", Icon = "home" })
+local MainTab = Window:CreateTab("Main", 4483362458) -- Icon ID
+local MainSection = MainTab:CreateSection("Copyright Info")
 
-MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
-MainTab:AddButton({
-    Title = "Copy Discord Link",
-    Desc = "discord.gg/getsades",
-    Callback = function()
-        setclipboard("https://discord.gg/getsades")
-        WindUI:Notify("Success", "Discord link copied!", 3)
-    end
+MainTab:CreateLabel("© 2026 ATMC Community & DapzX Team")
+MainTab:CreateLabel("Executor: " .. ExecName)
+MainTab:CreateLabel("Version: v1.0.0")
+
+MainTab:CreateButton({
+   Name = "Copy Discord Link",
+   Callback = function()
+      setclipboard("https://discord.gg/getsades")
+      Rayfield:Notify({Title = "Success", Content = "Link Copied!", Duration = 3})
+   end,
 })
 
 -- ==========================================
--- TAB: INFO
+-- TAB: INFO (CREDITS)
 -- ==========================================
-local InfoTab = Window:Tab({ Title = "Info", Icon = "info" })
-
-InfoTab:AddLabel("--- CREDITS ---")
-InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
-InfoTab:AddDivider()
-InfoTab:AddLabel("Version: " .. ScriptVer)
+local InfoTab = Window:CreateTab("Info", 4483362458)
+InfoTab:CreateSection("Credits")
+InfoTab:CreateLabel("• TheoXAtomic")
+InfoTab:CreateLabel("• DapzXAtomic")
+InfoTab:CreateLabel("• MonxAtomic")
 
 -- ==========================================
 -- TAB: UTILITIES
 -- ==========================================
-local UtilsTab = Window:Tab({ Title = "Utilities", Icon = "settings" })
+local UtilsTab = Window:CreateTab("Utilities", 4483362458)
 
-UtilsTab:AddToggle({
-    Title = "Anti-Detection",
-    Desc = "Bypass basic kick detection",
-    Callback = function(state)
-        _G.AntiDetect = state
-        if state then
-            local mt = getrawmetatable(game)
-            local old = mt.__namecall
-            setreadonly(mt, false)
-            mt.__namecall = newcclosure(function(self, ...)
-                if _G.AntiDetect and getnamecallmethod():lower() == "kick" then
-                    return nil
-                end
-                return old(self, ...)
-            end)
-            setreadonly(mt, true)
-            WindUI:Notify("Anti-Detect", "Active!", 2)
-        end
-    end
+UtilsTab:CreateToggle({
+   Name = "Anti-Detection",
+   CurrentValue = false,
+   Callback = function(Value)
+      _G.AntiDetect = Value
+      if Value then
+          local mt = getrawmetatable(game)
+          setreadonly(mt, false)
+          local old = mt.__namecall
+          mt.__namecall = newcclosure(function(self, ...)
+              if getnamecallmethod():lower() == "kick" then return nil end
+              return old(self, ...)
+          end)
+          setreadonly(mt, true)
+      end
+   end,
 })
 
-UtilsTab:AddSlider({
-    Title = "WalkSpeed",
-    Min = 16, Max = 300, Default = 16,
-    Callback = function(v)
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v
-        end
-    end
+UtilsTab:CreateSlider({
+   Name = "WalkSpeed",
+   Range = {16, 300},
+   Increment = 1,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Callback = function(Value)
+      if game.Players.LocalPlayer.Character then
+          game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+      end
+   end,
 })
 
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
-local SurvTab = Window:Tab({ Title = "Survivor", Icon = "user" })
-
-SurvTab:AddToggle({
-    Title = "Auto Parry (Sword)",
-    Callback = function(state) _G.AutoParry = state end
+local SurvTab = Window:CreateTab("Survivor", 4483362458)
+SurvTab:CreateToggle({
+   Name = "Auto Parry (Sword)",
+   CurrentValue = false,
+   Callback = function(Value) _G.AutoParry = Value end,
 })
+SurvTab:CreateButton({ Name = "Auto Fix Generator", Callback = function() end })
 
 -- ==========================================
 -- TAB: KILLER
 -- ==========================================
-local KillTab = Window:Tab({ Title = "Killer", Icon = "skull" })
-
-KillTab:AddToggle({
-    Title = "Instant Kill ALL (RISKY)",
-    Callback = function(state) 
-        if state then WindUI:Notify("WARNING", "Very Risky!", 4) end
-    end
+local KillTab = Window:CreateTab("Killer", 4483362458)
+KillTab:CreateToggle({
+   Name = "Instant Kill ALL (RISKY)",
+   CurrentValue = false,
+   Callback = function(Value) 
+      if Value then Rayfield:Notify({Title = "WARNING", Content = "High Ban Risk!", Duration = 5}) end
+   end,
 })
 
 -- ==========================================
 -- TAB: PERFORMANCE
 -- ==========================================
-local PerfTab = Window:Tab({ Title = "Performance", Icon = "zap" })
-
-PerfTab:AddButton({
-    Title = "FPS Booster",
-    Callback = function()
-        game:GetService("Lighting").GlobalShadows = false
-        WindUI:Notify("Performance", "FPS Boosted", 2)
-    end
+local PerfTab = Window:CreateTab("Performance", 4483362458)
+PerfTab:CreateButton({
+   Name = "FPS Booster",
+   Callback = function()
+      game:GetService("Lighting").GlobalShadows = false
+      Rayfield:Notify({Title = "Performance", Content = "Boosted!", Duration = 2})
+   end,
 })
-
--- Select awal
-Window:SelectTab(MainTab)
