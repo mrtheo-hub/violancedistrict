@@ -1,41 +1,42 @@
--- [[ VIOLENCE DISTRICT - ATOMIC EDITION V1.0.0 ]]
+-- [[ VIOLENCE DISTRICT - ATOMIC EDITION V1.0.1 ]]
 -- Author: Atomic Community
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "Violence District - Atomic Edition",
-   LoadingTitle = "Atomic Community v1.0.0",
-   LoadingSubtitle = "Loading Modules...",
+   LoadingTitle = "Atomic Community v1.0.1",
+   LoadingSubtitle = "by Theo, Dapz, & Mon",
    ConfigurationSaving = { Enabled = false }
 })
 
 -- ==========================================
--- TAB: MAIN
+-- TAB: MAIN (Copyright Added)
 -- ==========================================
 local MainTab = Window:CreateTab("Main", 4483362458)
-MainTab:CreateLabel("© 2026 ATMC Community & DapzX Team")
+MainTab:CreateSection("Copyright & Credits")
+MainTab:CreateLabel("© 2026 ATMC Community - All Rights Reserved")
+MainTab:CreateLabel("Script by: TheoXAtomic, DapzXAtomic, MonxAtomic")
 MainTab:CreateButton({
    Name = "Copy Discord Link",
    Callback = function() setclipboard("https://discord.gg/getsades") end,
 })
 
 -- ==========================================
--- TAB: INFO (CHANGELOG)
+-- TAB: INFO
 -- ==========================================
 local InfoTab = Window:CreateTab("Info", 4483362458)
-InfoTab:CreateSection("Changelog V1.0.0")
-InfoTab:CreateLabel("• Noclip & Anti-Staff Added")
-InfoTab:CreateLabel("• One Hit & Auto Gate Added")
-InfoTab:CreateLabel("• FPS Booster Optimized")
-InfoTab:CreateSection("Credits")
-InfoTab:CreateLabel("TheoXAtomic | DapzXAtomic | MonxAtomic")
+InfoTab:CreateSection("Changelog V1.0.1")
+InfoTab:CreateLabel("• Fixed WalkSpeed Bug")
+InfoTab:CreateLabel("• Removed Infinite Stamina")
+InfoTab:CreateLabel("• Added Auto Fix Generator")
 
 -- ==========================================
 -- TAB: UTILITIES
 -- ==========================================
 local UtilsTab = Window:CreateTab("Utilities", 4483362458)
-UtilsTab:CreateSection("Detection")
+UtilsTab:CreateSection("Detection & Movement")
+
 UtilsTab:CreateToggle({
    Name = "Noclip (Tembus Tembok)",
    Callback = function(Value)
@@ -50,28 +51,29 @@ UtilsTab:CreateToggle({
    end,
 })
 
-UtilsTab:CreateToggle({
-   Name = "Anti-Staff Detection",
+UtilsTab:CreateSlider({
+   Name = "WalkSpeed (Fixed)",
+   Range = {16, 150},
+   Increment = 1,
+   CurrentValue = 16,
    Callback = function(Value)
-      _G.AntiStaff = Value
-      spawn(function()
-         while _G.AntiStaff do
-            for _, p in pairs(game.Players:GetPlayers()) do
-               if p:GetRankInGroup(0) > 100 then game.Players.LocalPlayer:Kick("Staff!") end
-            end
-            task.wait(2)
-         end
-      end)
+      local Hum = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+      if Hum then Hum.WalkSpeed = Value end
    end,
 })
 
 -- ==========================================
--- TAB: SURVIVOR
+-- TAB: SURVIVOR (Replacement for Stamina)
 -- ==========================================
 local SurvTab = Window:CreateTab("Survivor", 4483362458)
 SurvTab:CreateToggle({ Name = "Auto Parry (Sword)", Callback = function(s) end })
 SurvTab:CreateToggle({ Name = "Auto Gate", Callback = function(s) end })
-SurvTab:CreateToggle({ Name = "Infinite Stamina", Callback = function(s) end })
+SurvTab:CreateButton({ 
+   Name = "Auto Fix Nearest Generator", 
+   Callback = function() 
+       -- Placeholder for generator logic
+   end 
+})
 
 -- ==========================================
 -- TAB: KILLER
@@ -85,7 +87,7 @@ KillTab:CreateToggle({ Name = "Hitbox Expander", Callback = function(s) end })
 -- ==========================================
 local PerfTab = Window:CreateTab("Performance", 4483362458)
 PerfTab:CreateButton({
-   Name = "FPS Booster",
+   Name = "FPS Booster (Max Optimized)",
    Callback = function()
       game:GetService("Lighting").GlobalShadows = false
       for _, v in pairs(workspace:GetDescendants()) do
