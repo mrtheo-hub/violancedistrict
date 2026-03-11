@@ -8,18 +8,17 @@ local ExecName = (identifyexecutor and identifyexecutor()) or "Unknown"
 local ScriptVer = "v1.0.0"
 
 local Window = WindUI:CreateWindow({
-    Title = "Atomic Edition - " .. ExecName,
+    Title = "Atomic Edition - " .. ExecName .. " (" .. ScriptVer .. ")",
     Icon = "rbxassetid://10723343321", 
     Author = "Atomic Community",
     Folder = "AtomicScripts"
 })
 
-task.wait(0.2) -- Jeda biar window siap render tab
-
 -- ==========================================
 -- TAB: MAIN
 -- ==========================================
-local MainTab = Window:CreateTab("Main", "home")
+local MainTab = Window:Tab({ Title = "Main", Icon = "home" })
+
 MainTab:AddLabel("© 2026 ATMC Community & DapzX Team")
 MainTab:AddButton({
     Title = "Copy Discord Link",
@@ -33,7 +32,8 @@ MainTab:AddButton({
 -- ==========================================
 -- TAB: INFO
 -- ==========================================
-local InfoTab = Window:CreateTab("Info", "info")
+local InfoTab = Window:Tab({ Title = "Info", Icon = "info" })
+
 InfoTab:AddLabel("--- CREDITS ---")
 InfoTab:AddLabel("• TheoXAtomic | DapzXAtomic | MonxAtomic")
 InfoTab:AddDivider()
@@ -42,27 +42,25 @@ InfoTab:AddLabel("Version: " .. ScriptVer)
 -- ==========================================
 -- TAB: UTILITIES
 -- ==========================================
-local UtilsTab = Window:CreateTab("Utilities", "settings")
+local UtilsTab = Window:Tab({ Title = "Utilities", Icon = "settings" })
 
 UtilsTab:AddToggle({
     Title = "Anti-Detection",
-    Desc = "Bypass basic anticheat & staff detection",
+    Desc = "Bypass basic kick detection",
     Callback = function(state)
         _G.AntiDetect = state
         if state then
-            WindUI:Notify("Anti-Detect", "Activated: Bypassing detection...", 3)
-            -- Logic: Anti-Kick for WalkSpeed & Teleport
             local mt = getrawmetatable(game)
             local old = mt.__namecall
             setreadonly(mt, false)
             mt.__namecall = newcclosure(function(self, ...)
-                local method = getnamecallmethod()
-                if _G.AntiDetect and (method == "Kick" or method == "kick") then
-                    return nil -- Blokir perintah kick dari game
+                if _G.AntiDetect and getnamecallmethod():lower() == "kick" then
+                    return nil
                 end
                 return old(self, ...)
             end)
             setreadonly(mt, true)
+            WindUI:Notify("Anti-Detect", "Active!", 2)
         end
     end
 })
@@ -77,29 +75,23 @@ UtilsTab:AddSlider({
     end
 })
 
-UtilsTab:AddToggle({
-    Title = "Fullbright",
-    Callback = function(state)
-        game:GetService("Lighting").Brightness = state and 2 or 1
-    end
-})
-
 -- ==========================================
 -- TAB: SURVIVOR
 -- ==========================================
-local SurvTab = Window:CreateTab("Survivor", "user")
+local SurvTab = Window:Tab({ Title = "Survivor", Icon = "user" })
+
 SurvTab:AddToggle({
     Title = "Auto Parry (Sword)",
     Callback = function(state) _G.AutoParry = state end
 })
-SurvTab:AddButton({ Title = "Auto Fix Generator", Callback = function() end })
 
 -- ==========================================
 -- TAB: KILLER
 -- ==========================================
-local KillTab = Window:CreateTab("Killer", "skull")
+local KillTab = Window:Tab({ Title = "Killer", Icon = "skull" })
+
 KillTab:AddToggle({
-    Title = "Instant Kill ALL",
+    Title = "Instant Kill ALL (RISKY)",
     Callback = function(state) 
         if state then WindUI:Notify("WARNING", "Very Risky!", 4) end
     end
@@ -108,7 +100,8 @@ KillTab:AddToggle({
 -- ==========================================
 -- TAB: PERFORMANCE
 -- ==========================================
-local PerfTab = Window:CreateTab("Performance", "zap")
+local PerfTab = Window:Tab({ Title = "Performance", Icon = "zap" })
+
 PerfTab:AddButton({
     Title = "FPS Booster",
     Callback = function()
@@ -117,5 +110,5 @@ PerfTab:AddButton({
     end
 })
 
--- Force Open Tab
+-- Select awal
 Window:SelectTab(MainTab)
